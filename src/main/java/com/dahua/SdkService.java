@@ -1,18 +1,18 @@
 package com.dahua;
 
+import com.dahua.bean.CaptureBean;
 import com.dahua.common.Res;
 import com.dahua.lib.NetSDKLib;
 import com.dahua.module.LoginModule;
 import com.sun.jna.Pointer;
 
 import javax.swing.*;
-import java.io.File;
-import java.util.Arrays;
+import java.util.Queue;
 
-public class Service {
+public class SdkService {
 
     // 设备断线通知回调
-    private static DisConnect disConnect       = new DisConnect();
+    private static DisConnect disConnect = new DisConnect();
 
     // 网络连接恢复
     private static HaveReConnect haveReConnect = new HaveReConnect();
@@ -45,20 +45,36 @@ public class Service {
         }
     }
 
-    public void login() {
-        LoginModule.login("zhengzhoutn1.wicp.vip", 20277, "admin", "tn123456");
+    private void login(String ip, int port, String name, String pwd) {
+        LoginModule.login(ip, port, name, pwd);
     }
 
-    public void start() {
+    public void start(String ip, int port, String name, String pwd) {
         LoginModule.init(disConnect, haveReConnect);
-        login();
+        login(ip, port, name, pwd);
     }
 
     public static void main(String[] args) throws InterruptedException {
-        Service service = new Service();
-        service.start();
+        SdkService service = new SdkService();
+        service.start("zhengzhoutn1.wicp.vip", 20277, "admin", "tn123456");
         TrafficEvent event = new TrafficEvent();
         event.startEvent();
-        Thread.sleep(1000000);
+        Thread r = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    Queue<CaptureBean> queue = event.getQueue();
+                    if (queue.size() > 0) {
+                        System.out.println(queue.poll());
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        r.start();
     }
 }
