@@ -45,18 +45,18 @@ public class SdkService {
         }
     }
 
-    private void login(String ip, int port, String name, String pwd) {
-        LoginModule.login(ip, port, name, pwd);
-    }
-
-    public void start(String ip, int port, String name, String pwd) {
-        LoginModule.init(disConnect, haveReConnect);
-        login(ip, port, name, pwd);
+    public boolean start(String ip, int port, String name, String pwd) {
+        if (LoginModule.init(disConnect, haveReConnect)) {
+            if (LoginModule.login(ip, port, name, pwd)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) throws InterruptedException {
         SdkService service = new SdkService();
-        service.start("zhengzhoutn1.wicp.vip", 20277, "admin", "tn123456");
+        service.start("zhengzhoutn1.wicp.vip", 20277, "admin1", "tn123456");
         TrafficEvent event = new TrafficEvent();
         event.startEvent();
         Thread r = new Thread() {
