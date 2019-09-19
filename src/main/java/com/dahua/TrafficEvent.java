@@ -102,7 +102,9 @@ public class TrafficEvent {
                 GetStuObject(dwAlarmType, pAlarmInfo);
 
                 // 保存图片，获取图片缓存
-                savePlatePic(pBuffer, dwBufSize, trafficInfo, bean);
+                if (SdkService.get("savePic", Boolean.class)) {
+                    savePlatePic(pBuffer, dwBufSize, trafficInfo, bean);
+                }
                 bean.setPlateNumber(trafficInfo.m_PlateNumber);
                 bean.setPlateColor(trafficInfo.m_PlateColor);
                 bean.setVehicleSize(trafficInfo.m_VehicleType + ":" + trafficInfo.m_VehicleSize);

@@ -7,9 +7,50 @@ import com.dahua.module.LoginModule;
 import com.sun.jna.Pointer;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 
 public class SdkService {
+
+    private static Map<String, Object> map = new HashMap<>();
+
+    static {
+        map.put("savePic", true);
+    }
+
+    class Config {
+
+        private SdkService sdkService;
+
+        Config(SdkService sdkService) {
+            this.sdkService = sdkService;
+        }
+        public Config set(String key, Object value) {
+            map.put(key, value);
+            return this;
+        }
+
+        public SdkService build() {
+            return sdkService;
+        }
+
+    }
+
+    public Config builder() {
+        return new Config(this);
+    }
+
+    public static String get(String key) {
+        return get(key, String.class);
+    }
+
+    public static <T> T get(String key, Class<T> tClass) {
+        if (null == map.get(key)) {
+            throw new IllegalArgumentException(key + " is not found!");
+        }
+        return tClass.cast(map.get(key));
+    }
 
     // 设备断线通知回调
     private static DisConnect disConnect = new DisConnect();
@@ -45,36 +86,48 @@ public class SdkService {
         }
     }
 
-    public boolean start(String ip, int port, String name, String pwd) {
+    public boolean start() {
         if (LoginModule.init(disConnect, haveReConnect)) {
-            if (LoginModule.login(ip, port, name, pwd)) {
-                return true;
-            }
+            return LoginModule.login(
+                    get("ip"),
+                    get("port", Integer.class),
+                    get("name"),
+                    get("password"));
         }
         return false;
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        SdkService service = new SdkService();
-        service.start("zhengzhoutn1.wicp.vip", 20277, "admin1", "tn123456");
-        TrafficEvent event = new TrafficEvent();
-        event.startEvent();
-        Thread r = new Thread() {
-            @Override
-            public void run() {
-                while (true) {
-                    Queue<CaptureBean> queue = event.getQueue();
-                    if (queue.size() > 0) {
-                        System.out.println(queue.poll());
-                    }
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+    public static void main(String[] args) {
+        SdkService service = new SdkService().builder()
+                .set("ip", "zhengzhoutn1.wicp.vip")
+                .set("port", 20277)
+                .set("name", "admin")
+                .set("password", "tn123456")
+                .set("savePic", false)
+                .build();
+        if (service.start()) {
+            TrafficEvent event = new TrafficEvent();
+            event.startEvent();
+            Thread r = new Thread() {
+                @Override
+                public void run() {
+                    while (true) {
+                        Queue<CaptureBean> queue = event.getQueue();
+                        if (queue.size() > 0) {
+                            System.out.println(queue.poll());
+                        }
+                        try {
+                            Thread.sleep(500);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        };
-        r.start();
+            };
+            r.start();
+        } else {
+            System.out.println("login failed");
+        }
+
     }
 }
