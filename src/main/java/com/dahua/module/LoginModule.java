@@ -2,6 +2,7 @@ package com.dahua.module;
 
 import java.io.File;
 
+import com.dahua.SdkService;
 import com.dahua.lib.NetSDKLib;
 import com.dahua.lib.NetSDKLib.LLong;
 import com.dahua.lib.ToolKits;
@@ -42,11 +43,11 @@ public class LoginModule {
 
         //打开日志，可选
         NetSDKLib.LOG_SET_PRINT_INFO setLog = new NetSDKLib.LOG_SET_PRINT_INFO();
-        File path = new File("./sdklog/");
+        File path = new File(SdkService.get("logPath"));
         if (!path.exists()) {
             path.mkdir();
         }
-        String logPath = path.getAbsoluteFile().getParent() + "\\sdklog\\" + ToolKits.getDate() + ".log";
+        String logPath = path.getAbsoluteFile() + "/sdk_" + ToolKits.getDate() + ".log";
         setLog.nPrintStrategy = 0;
         setLog.bSetFilePath = 1;
         System.arraycopy(logPath.getBytes(), 0, setLog.szLogFilePath, 0, logPath.getBytes().length);

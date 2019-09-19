@@ -17,13 +17,15 @@ public class SdkService {
 
     static {
         map.put("savePic", true);
+        map.put("dllPath", "./src/main/resources/libs/win32/");
+        map.put("logPath", "./sdklog/");
     }
 
-    class Config {
+    public class Config {
 
         private SdkService sdkService;
 
-        Config(SdkService sdkService) {
+        public Config(SdkService sdkService) {
             this.sdkService = sdkService;
         }
         public Config set(String key, Object value) {
@@ -104,6 +106,7 @@ public class SdkService {
                 .set("name", "admin")
                 .set("password", "tn123456")
                 .set("savePic", false)
+                .set("logPath", "./logs")
                 .build();
         if (service.start()) {
             TrafficEvent event = new TrafficEvent();

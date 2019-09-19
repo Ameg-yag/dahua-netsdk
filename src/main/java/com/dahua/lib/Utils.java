@@ -1,5 +1,6 @@
 package com.dahua.lib;
 
+import com.dahua.SdkService;
 import com.sun.jna.Platform;
 
 public class Utils {
@@ -73,7 +74,7 @@ public class Utils {
 		String loadLibrary = "";
 		String osPrefix = getOsPrefix();
 		if(osPrefix.toLowerCase().startsWith("win32-x86")) {
-			loadLibrary = "./src/main/resources/libs/win32/";
+			loadLibrary = SdkService.get("dllPath");
 		} else if(osPrefix.toLowerCase().startsWith("win32-amd64") ) {
 			loadLibrary = "./libs/win64/";
 		} else if(osPrefix.toLowerCase().startsWith("linux-i386")) {
