@@ -73,8 +73,6 @@ public class TrafficEvent {
         }
     }
 
-    private final TRAFFIC_INFO trafficInfo = new TRAFFIC_INFO();
-
     private void setQueue(CaptureBean bean) {
         while (!queue.offer(bean)) {
             queue.offer(bean);
@@ -95,11 +93,12 @@ public class TrafficEvent {
             if (lAnalyzerHandle.longValue() == 0) {
                 return -1;
             }
-
+            final TRAFFIC_INFO trafficInfo = new TRAFFIC_INFO();
             if (dwAlarmType == NetSDKLib.EVENT_IVS_TRAFFICJUNCTION) {
                 CaptureBean bean = new CaptureBean();
                 // 获取识别对象 车身对象 事件发生时间 车道号等信息
-                GetStuObject(dwAlarmType, pAlarmInfo);
+                GetStuObject(dwAlarmType, pAlarmInfo, trafficInfo);
+                System.out.println(trafficInfo.toString());
 
                 // 保存图片，获取图片缓存
                 if (SdkService.get("savePic", Boolean.class)) {
@@ -115,7 +114,7 @@ public class TrafficEvent {
         }
 
         // 获取识别对象 车身对象 事件发生时间 车道号等信息
-        private void GetStuObject(int dwAlarmType, Pointer pAlarmInfo) {
+        private void GetStuObject(int dwAlarmType, Pointer pAlarmInfo, TRAFFIC_INFO trafficInfo) {
             if (pAlarmInfo == null) {
                 return;
             }
@@ -149,36 +148,36 @@ public class TrafficEvent {
                     trafficInfo.m_BoundingBox = msg.stuObject.BoundingBox;
                     break;
                 }
-                case NetSDKLib.EVENT_IVS_TRAFFIC_MANUALSNAP: ///< 交通手动抓拍事件
-                {
-                    JOptionPane.showMessageDialog(null, Res.string().getManualCaptureSucceed(), Res.string().getPromptMessage(), JOptionPane.INFORMATION_MESSAGE);
-                    NetSDKLib.DEV_EVENT_TRAFFIC_MANUALSNAP_INFO msg = new NetSDKLib.DEV_EVENT_TRAFFIC_MANUALSNAP_INFO();
-                    ToolKits.GetPointerData(pAlarmInfo, msg);
-
-                    trafficInfo.m_EventName = Res.string().getEventName(NetSDKLib.EVENT_IVS_TRAFFIC_MANUALSNAP);
-                    try {
-                        trafficInfo.m_PlateNumber = new String(msg.stuObject.szText, "GBK").trim();
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    trafficInfo.m_PlateType = new String(msg.stTrafficCar.szPlateType).trim();
-                    trafficInfo.m_FileCount = String.valueOf(msg.stuFileInfo.bCount);
-                    trafficInfo.m_FileIndex = String.valueOf(msg.stuFileInfo.bIndex);
-                    trafficInfo.m_GroupID = String.valueOf(msg.stuFileInfo.nGroupId);
-                    trafficInfo.m_IllegalPlace = ToolKits.GetPointerDataToByteArr(msg.stTrafficCar.szDeviceAddress);
-                    trafficInfo.m_LaneNumber = String.valueOf(msg.nLane);
-                    trafficInfo.m_PlateColor = new String(msg.stTrafficCar.szPlateColor).trim();
-                    trafficInfo.m_VehicleColor = new String(msg.stTrafficCar.szVehicleColor).trim();
-                    trafficInfo.m_VehicleType = new String(msg.stuVehicle.szObjectSubType).trim();
-                    trafficInfo.m_VehicleSize = Res.string().getTrafficSize(msg.stTrafficCar.nVehicleSize);
-                    trafficInfo.m_Utc = msg.UTC;
-                    trafficInfo.m_bPicEnble = msg.stuObject.bPicEnble;
-                    trafficInfo.m_OffSet = msg.stuObject.stPicInfo.dwOffSet;
-                    trafficInfo.m_FileLength = msg.stuObject.stPicInfo.dwFileLenth;
-                    trafficInfo.m_BoundingBox = msg.stuObject.BoundingBox;
-
-                    break;
-                }
+//                case NetSDKLib.EVENT_IVS_TRAFFIC_MANUALSNAP: ///< 交通手动抓拍事件
+//                {
+//                    JOptionPane.showMessageDialog(null, Res.string().getManualCaptureSucceed(), Res.string().getPromptMessage(), JOptionPane.INFORMATION_MESSAGE);
+//                    NetSDKLib.DEV_EVENT_TRAFFIC_MANUALSNAP_INFO msg = new NetSDKLib.DEV_EVENT_TRAFFIC_MANUALSNAP_INFO();
+//                    ToolKits.GetPointerData(pAlarmInfo, msg);
+//
+//                    trafficInfo.m_EventName = Res.string().getEventName(NetSDKLib.EVENT_IVS_TRAFFIC_MANUALSNAP);
+//                    try {
+//                        trafficInfo.m_PlateNumber = new String(msg.stuObject.szText, "GBK").trim();
+//                    } catch (UnsupportedEncodingException e) {
+//                        e.printStackTrace();
+//                    }
+//                    trafficInfo.m_PlateType = new String(msg.stTrafficCar.szPlateType).trim();
+//                    trafficInfo.m_FileCount = String.valueOf(msg.stuFileInfo.bCount);
+//                    trafficInfo.m_FileIndex = String.valueOf(msg.stuFileInfo.bIndex);
+//                    trafficInfo.m_GroupID = String.valueOf(msg.stuFileInfo.nGroupId);
+//                    trafficInfo.m_IllegalPlace = ToolKits.GetPointerDataToByteArr(msg.stTrafficCar.szDeviceAddress);
+//                    trafficInfo.m_LaneNumber = String.valueOf(msg.nLane);
+//                    trafficInfo.m_PlateColor = new String(msg.stTrafficCar.szPlateColor).trim();
+//                    trafficInfo.m_VehicleColor = new String(msg.stTrafficCar.szVehicleColor).trim();
+//                    trafficInfo.m_VehicleType = new String(msg.stuVehicle.szObjectSubType).trim();
+//                    trafficInfo.m_VehicleSize = Res.string().getTrafficSize(msg.stTrafficCar.nVehicleSize);
+//                    trafficInfo.m_Utc = msg.UTC;
+//                    trafficInfo.m_bPicEnble = msg.stuObject.bPicEnble;
+//                    trafficInfo.m_OffSet = msg.stuObject.stPicInfo.dwOffSet;
+//                    trafficInfo.m_FileLength = msg.stuObject.stPicInfo.dwFileLenth;
+//                    trafficInfo.m_BoundingBox = msg.stuObject.BoundingBox;
+//
+//                    break;
+//                }
                 default:
                     break;
             }

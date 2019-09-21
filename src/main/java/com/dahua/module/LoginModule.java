@@ -47,7 +47,7 @@ public class LoginModule {
         if (!path.exists()) {
             path.mkdir();
         }
-        String logPath = path.getAbsoluteFile() + "/sdk_" + ToolKits.getDate() + ".log";
+        String logPath = path.getAbsoluteFile() + File.separator + "sdk_" + ToolKits.getDate() + ".log";
         setLog.nPrintStrategy = 0;
         setLog.bSetFilePath = 1;
         System.arraycopy(logPath.getBytes(), 0, setLog.szLogFilePath, 0, logPath.getBytes().length);

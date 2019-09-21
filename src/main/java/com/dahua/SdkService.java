@@ -105,8 +105,8 @@ public class SdkService {
                 .set("port", 20277)
                 .set("name", "admin")
                 .set("password", "tn123456")
-                .set("savePic", false)
-                .set("logPath", "./logs")
+                .set("savePic", true)
+                .set("logPath", "C:\\Users\\Administrator\\Desktop\\core\\netsdk\\logs")
                 .build();
         if (service.start()) {
             TrafficEvent event = new TrafficEvent();

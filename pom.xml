@@ -15,12 +15,17 @@
     </properties>
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>com.dahua</groupId>-->
+<!--            <artifactId>jna</artifactId>-->
+<!--            <version>1.0</version>-->
+<!--            <scope>system</scope>-->
+<!--            <systemPath>${project.basedir}/src/main/resources/jars/jna.jar</systemPath>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>com.dahua</groupId>
+            <groupId>net.java.dev.jna</groupId>
             <artifactId>jna</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/jars/jna.jar</systemPath>
+            <version>5.4.0</version>
         </dependency>
     </dependencies>
 
