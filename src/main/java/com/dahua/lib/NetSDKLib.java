@@ -17,8 +17,8 @@ import com.sun.jna.win32.StdCallLibrary.StdCallCallback;
  * NetSDK JNA接口封装
  */
 public interface NetSDKLib extends Library {
-	NetSDKLib NETSDK_INSTANCE = (NetSDKLib)Native.load(Utils.getLoadLibrary("dhnetsdk"), NetSDKLib.class);
-	NetSDKLib CONFIG_INSTANCE = (NetSDKLib)Native.load(Utils.getLoadLibrary("dhconfigsdk"), NetSDKLib.class);
+	NetSDKLib NETSDK_INSTANCE = (NetSDKLib)Native.loadLibrary(Utils.getLoadLibrary("dhnetsdk"), NetSDKLib.class);
+	NetSDKLib CONFIG_INSTANCE = (NetSDKLib)Native.loadLibrary(Utils.getLoadLibrary("dhconfigsdk"), NetSDKLib.class);
 	
 	public static class LLong extends IntegerType {
 		private static final long serialVersionUID = 1L;
@@ -18478,7 +18478,8 @@ public interface NetSDKLib extends Library {
     // int nState = *(int*) reserved 表示当前回调数据的状态, 为0表示当前数据为实时数据，为1表示当前回调数据是离线数据，为2时表示离线数据传送结束
     // pAlarmInfo 对应智能事件信息, pBuffer 对应智能图片信息, dwBufSize 智能图片信息大小
     public interface fAnalyzerDataCallBack extends StdCallCallback {
-        public int invoke(LLong lAnalyzerHandle, int dwAlarmType, Pointer pAlarmInfo, Pointer pBuffer, int dwBufSize, Pointer dwUser, int nSequence, Pointer reserved);
+        public int invoke(LLong lAnalyzerHandle, int dwAlarmType, Pointer pAlarmInfo, Pointer pBuffer,
+                          int dwBufSize, Pointer dwUser, int nSequence, Pointer reserved);
     }
     
     // 抓图回调函数原形(pBuf内存由SDK内部申请释放)
